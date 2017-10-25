@@ -1,4 +1,3 @@
-# echo '' > directional_data.txt
 echo "path;eachline;importedmodule" > directional_data.txt
 git ls-files --full-name | grep '.py$' > file_names.txt
 while IFS=';' read -r path || [[ -n "$path" ]]; do
@@ -10,7 +9,6 @@ while IFS=';' read -r path || [[ -n "$path" ]]; do
             else
                 importedmodule=$(echo `expr "$eachline" : 'import \(.*\)'`)
             fi
-            # pythonifiedpath=$(echo `expr "$path" : '\(.*\)\.py'` | sed -e 's/\//\./g')
             echo -e "$path;$eachline;$importedmodule" >> directional_data.txt
         fi
     done <<< "$foundstrs"
