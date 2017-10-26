@@ -1,5 +1,5 @@
 import unittest
-from nodeFactory import pythonify_path
+from nodeFactory import *
 
 class test_statements(unittest.TestCase):
     def test_pythonify_path(self):
@@ -9,6 +9,11 @@ class test_statements(unittest.TestCase):
             pythonify_path('folder1/folder2/_file_with_symbols_.py'),
             'folder1.folder2._file_with_symbols_'
             )
+
+    def test_ignore_node(self):
+        self.assertEqual(ignore_node('nodename', []), False)
+        self.assertEqual(ignore_node('nodename', [r'nodename']), True)
+        self.assertEqual(ignore_node('name_of_node', [r'nonmatch', r'.+_of_node']), True)
 
 
 if __name__ == '__main__':

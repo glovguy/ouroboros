@@ -35,3 +35,4 @@ def node_hash(fileName, ignore=[], verbose=False):
 def ignore_node(node, ignore):
     for eachPattern in ignore:
         if re.match(eachPattern, node) is not None: return True
+    return False
