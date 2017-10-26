@@ -2,11 +2,6 @@ import re
 import csv
 
 
-def pythonify_path(path):
-    p = re.sub(r'/', '.', path)
-    return re.sub(r'\.py', '', p)
-
-
 def node_hash(fileName, ignore=[], verbose=False):
     with open(fileName, 'r') as directionalData:
         csvFile = csv.reader(directionalData, delimiter=";")
@@ -25,6 +20,11 @@ def hash_from_csv(csvFile, ignore):
         if nodeHash.get(pythonifiedPath) is None: nodeHash[pythonifiedPath] = set()
         nodeHash[pythonifiedPath].add(importedmodule)
     return nodeHash
+
+
+def pythonify_path(path):
+    p = re.sub(r'/', '.', path)
+    return re.sub(r'\.py', '', p)
 
 
 def ignore_node(node, ignore):
