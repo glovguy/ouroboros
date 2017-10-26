@@ -8,27 +8,22 @@ def pythonify_path(path):
 
 
 def node_hash(fileName, ignore=[], verbose=False):
+    with open(fileName, 'r') as directionalData:
+        csvFile = csv.reader(directionalData, delimiter=";")
+        next(csvFile)  # Skip header
+        nodeHash = hash_from_csv(csvFile, ignore)
+    if verbose is True: print("nodeHash: ", nodeHash, "Length: ", len(nodeHash))
+    return nodeHash
+
+
+def hash_from_csv(csvFile, ignore):
     nodeHash = {}
-    firstLine = True
-    with open(fileName, 'r') as tsv:
-        for line in csv.reader(tsv, delimiter=";"):
-            if firstLine:
-                firstLine = False
-                continue
-            if len(line) != 3 and verbose is True:
-                print("ERROR: ")
-                print(line)
-                continue
-            path, eachline, importedmodule = line
-            pythonifiedPath = pythonify_path(path)
-            if ignore_node(pythonifiedPath, ignore): continue
-            if nodeHash.get(pythonifiedPath) is None: nodeHash[pythonifiedPath] = set()
-            nodeHash[pythonifiedPath].add(importedmodule)
-    if verbose is True:
-        print("nodeHash: ")
-        print(nodeHash)
-        print("Length: ")
-        print(len(nodeHash))
+    for line in csvFile:
+        path, eachline, importedmodule = line
+        pythonifiedPath = pythonify_path(path)
+        if ignore_node(pythonifiedPath, ignore): continue
+        if nodeHash.get(pythonifiedPath) is None: nodeHash[pythonifiedPath] = set()
+        nodeHash[pythonifiedPath].add(importedmodule)
     return nodeHash
 
 

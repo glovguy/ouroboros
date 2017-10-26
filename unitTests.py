@@ -15,6 +15,12 @@ class test_statements(unittest.TestCase):
         self.assertEqual(ignore_node('nodename', [r'nodename']), True)
         self.assertEqual(ignore_node('name_of_node', [r'nonmatch', r'.+_of_node']), True)
 
+    def test_hash_from_csv(self):
+        self.assertEqual(
+            hash_from_csv([['file', '', 'other_file']], []),
+            { 'file': set(['other_file']) }
+            )
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=1)
