@@ -13,12 +13,10 @@ class test_node_factory(unittest.TestCase):
             'folder1.folder2._file_with_symbols_'
             )
 
-
     def test_ignore_node(self):
         self.assertEqual(ignore_node('nodename', []), False)
         self.assertEqual(ignore_node('nodename', [r'nodename']), True)
         self.assertEqual(ignore_node('name_of_node', [r'nonmatch', r'.+_of_node']), True)
-
 
     def test_hash_from_csv(self):
         self.assertEqual(
@@ -37,6 +35,20 @@ class test_circularity(unittest.TestCase):
         visitor = LoopFindVisitor()
         self.assertTrue(visitor.visit('n3', ['n1', 'n2', 'n3', 'n4']))
         self.assertEqual(visitor.loops, [['n3', 'n4', 'n3']])
+
+    def test_loop_find_visitor_does_not_identify_non_loop(self):
+        visitor = LoopFindVisitor()
+        self.assertNotEqual(visitor.visit('n3', ['n1', 'n2']), True)
+
+    def test_loop_for(self):
+        self.assertEqual(loop_for(['n1', 'n2', 'n3', 'n4'], 'n3'), ['n3', 'n4', 'n3'])
+
+    def test_find_loops(self):
+        loops = find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+        self.assertEqual(len(loops), 1)
+        self.assertEqual(loops.__class__, [].__class__)
+        self.assertEqual(loops[0].__class__, [].__class__)
+        self.assertEqual(loops, [['n1', 'n2', 'n3', 'n1']])
 
 
 if __name__ == '__main__':
