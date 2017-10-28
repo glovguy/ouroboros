@@ -1,8 +1,10 @@
 import unittest
+from mock import MagicMock, patch
 from nodeFactory import *
+from circularity import *
 
 
-class test_statements(unittest.TestCase):
+class test_node_factory(unittest.TestCase):
     def test_pythonify_path(self):
         self.assertEqual(pythonify_path('file.py'), 'file')
         self.assertEqual(pythonify_path('folder/file.py'), 'folder.file')
@@ -23,6 +25,18 @@ class test_statements(unittest.TestCase):
             hash_from_csv([['file', '', 'other_file']], []),
             { 'file': set(['other_file']) }
             )
+
+
+class test_circularity(unittest.TestCase):
+    def test_loop_find_visitor_keeps_track_of_visited_nodes(self):
+        visitor = LoopFindVisitor()
+        visitor.visit('nodename', [])
+        self.assertTrue(visitor.node_visited('nodename'))
+
+    def test_loop_find_visitor_identifies_loop(self):
+        visitor = LoopFindVisitor()
+        self.assertTrue(visitor.visit('n3', ['n1', 'n2', 'n3', 'n4']))
+        self.assertEqual(visitor.loops, [['n3', 'n4', 'n3']])
 
 
 if __name__ == '__main__':

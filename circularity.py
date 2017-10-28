@@ -16,7 +16,7 @@ class LoopFindVisitor(object):
         return node in self.visitedNodes
 
 
-def loop_find(nodeHash, verbose=False):
+def find_loops(nodeHash, verbose=False):
     if verbose is True: print("\nBegin!")
     loopsVisitor = LoopFindVisitor()
     for eachNode in nodeHash.keys():
@@ -30,6 +30,7 @@ def loop_find(nodeHash, verbose=False):
         for l in loopsVisitor.loops:
             print(l)
         print("Done!")
+    return loopsVisitor.loops
 
 
 def loop_for(path, node):
