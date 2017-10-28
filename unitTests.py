@@ -2,6 +2,7 @@ import unittest
 from mock import MagicMock, patch
 from nodeFactory import *
 from circularity import *
+from traversal import *
 
 
 class test_node_factory(unittest.TestCase):
@@ -49,6 +50,24 @@ class test_circularity(unittest.TestCase):
         self.assertEqual(loops.__class__, [].__class__)
         self.assertEqual(loops[0].__class__, [].__class__)
         self.assertEqual(loops, [['n1', 'n2', 'n3', 'n1']])
+
+
+class MockVisitor(object):
+        def __init__(self):
+            self.visited = []
+
+        def visit(self, node, path):
+            self.visited.append(node)
+
+
+class test_traversal(unittest.TestCase):
+    def test_breadth_first_search_visits_all_nodes_in_depth_first_order(self):
+        visitor = MockVisitor()
+        maxN = 5
+        nodeHash = {str(x): str(x+1) for x in range(0, maxN)}
+        nodeHash['1'] = set(['3','2'])
+        BFS('0', nodeHash, visitor, [])
+        self.assertEqual(visitor.visited, ['0', '1', '3', '4', '2', '3', '4'])
 
 
 if __name__ == '__main__':
