@@ -44,6 +44,9 @@ def group_loops_by_module(loops, verbose=False):
         if problemModules.get(eachLoop[0]) is None:
             problemModules[eachLoop[0]] = set()
         problemModules[eachLoop[0]].add(eachLoop)
+    for eachModule in problemModules.keys():
+        if len(problemModules.get(eachModule)) == 1:
+            del problemModules[eachModule]
     if verbose is True:
         print("problemModules: ", problemModules)
     return problemModules

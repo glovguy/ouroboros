@@ -44,28 +44,28 @@ class test_circularity(unittest.TestCase):
         path = ['n1', 'n2', 'n3', 'n4']
         self.assertEqual(
             loop_for(path, 'n3'),
-             ('n3', 'n4')
-             )
+            ('n3', 'n4')
+            )
 
     def test_find_loops(self):
         loops = find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
         self.assertEqual(loops, [('n1', 'n2', 'n3')])
 
-    # def test_group_loops_by_module(self):
-    #     loops = [
-    #         ('1', '2', '1'),
-    #         ('2', '3', '2'),
-    #         ('1', '4', '5', '1')
-    #         ]
-    #     groups = group_loops_by_module(loops, verbose=True)
-    #     expected = {
-    #         '1': set([
-    #             ('1', '2', '1'),
-    #             ('1', '4', '5', '1')
-    #             ])
-    #         }
-    #     self.assertEqual(groups, expected)
+    def test_group_loops_by_module(self):
+        loops = [
+            ('1', '2'),
+            ('3', '4'),
+            ('1', '5', '6')
+            ]
+        groups = group_loops_by_module(loops)
+        expected = {
+            '1': set([
+                ('1', '2'),
+                ('1', '5', '6')
+                ])
+            }
+        self.assertEqual(groups, expected)
 
 
 class test_traversal(unittest.TestCase):
