@@ -1,9 +1,8 @@
 import unittest
-from mock import MagicMock, patch
+from testHelper import *
 from nodeFactory import *
 from circularity import *
 from traversal import *
-
 
 class test_node_factory(unittest.TestCase):
     def test_pythonify_path(self):
@@ -35,29 +34,38 @@ class test_circularity(unittest.TestCase):
     def test_loop_find_visitor_identifies_loop(self):
         visitor = LoopFindVisitor()
         self.assertTrue(visitor.visit('n3', ['n1', 'n2', 'n3', 'n4']))
-        self.assertEqual(visitor.loops, [['n3', 'n4', 'n3']])
+        self.assertEqual(visitor.loops, [('n3', 'n4')])
 
     def test_loop_find_visitor_does_not_identify_non_loop(self):
         visitor = LoopFindVisitor()
         self.assertNotEqual(visitor.visit('n3', ['n1', 'n2']), True)
 
     def test_loop_for(self):
-        self.assertEqual(loop_for(['n1', 'n2', 'n3', 'n4'], 'n3'), ['n3', 'n4', 'n3'])
+        path = ['n1', 'n2', 'n3', 'n4']
+        self.assertEqual(
+            loop_for(path, 'n3'),
+             ('n3', 'n4')
+             )
 
     def test_find_loops(self):
         loops = find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
-        self.assertEqual(loops.__class__, [].__class__)
-        self.assertEqual(loops[0].__class__, [].__class__)
-        self.assertEqual(loops, [['n1', 'n2', 'n3', 'n1']])
+        self.assertEqual(loops, [('n1', 'n2', 'n3')])
 
-
-class MockVisitor(object):
-        def __init__(self):
-            self.visited = []
-
-        def visit(self, node, path):
-            self.visited.append(node)
+    # def test_group_loops_by_module(self):
+    #     loops = [
+    #         ('1', '2', '1'),
+    #         ('2', '3', '2'),
+    #         ('1', '4', '5', '1')
+    #         ]
+    #     groups = group_loops_by_module(loops, verbose=True)
+    #     expected = {
+    #         '1': set([
+    #             ('1', '2', '1'),
+    #             ('1', '4', '5', '1')
+    #             ])
+    #         }
+    #     self.assertEqual(groups, expected)
 
 
 class test_traversal(unittest.TestCase):
@@ -67,7 +75,10 @@ class test_traversal(unittest.TestCase):
         nodeHash = {str(x): str(x+1) for x in range(0, maxN)}
         nodeHash['1'] = set(['3','2'])
         BFS('0', nodeHash, visitor, [])
-        self.assertEqual(visitor.visited, ['0', '1', '3', '4', '2', '3', '4'])
+        self.assertEqual(
+            visitor.visited,
+            ['0', '1', '3', '4', '2', '3', '4']
+            )
 
 
 if __name__ == '__main__':

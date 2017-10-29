@@ -35,4 +35,15 @@ def find_loops(nodeHash, verbose=False):
 
 def loop_for(path, node):
     loopStart = path.index(node)
-    return path[loopStart:] + [node]
+    return tuple(path[loopStart:])
+
+
+def group_loops_by_module(loops, verbose=False):
+    problemModules = {}
+    for eachLoop in loops:
+        if problemModules.get(eachLoop[0]) is None:
+            problemModules[eachLoop[0]] = set()
+        problemModules[eachLoop[0]].add(eachLoop)
+    if verbose is True:
+        print("problemModules: ", problemModules)
+    return problemModules
