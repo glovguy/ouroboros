@@ -41,9 +41,10 @@ def loop_for(path, node):
 def group_loops_by_module(loops, verbose=False):
     problemModules = {}
     for eachLoop in loops:
-        if problemModules.get(eachLoop[0]) is None:
-            problemModules[eachLoop[0]] = set()
-        problemModules[eachLoop[0]].add(eachLoop)
+        for eachModule in eachLoop:
+            if problemModules.get(eachModule) is None:
+                problemModules[eachModule] = set()
+            problemModules[eachModule].add(eachLoop)
     for eachModule in problemModules.keys():
         if len(problemModules.get(eachModule)) == 1:
             del problemModules[eachModule]

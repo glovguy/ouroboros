@@ -56,13 +56,18 @@ class test_circularity(unittest.TestCase):
         loops = [
             ('1', '2'),
             ('3', '4'),
-            ('1', '5', '6')
+            ('1', '5', '6'),
+            ('4', '7')
             ]
         groups = group_loops_by_module(loops)
         expected = {
             '1': set([
                 ('1', '2'),
                 ('1', '5', '6')
+                ]),
+            '4': set([
+                ('3', '4'),
+                ('4', '7')
                 ])
             }
         self.assertEqual(groups, expected)
