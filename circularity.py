@@ -1,4 +1,5 @@
 from traversal import BFS
+from tqdm import tqdm
 
 
 class LoopFindVisitor(object):
@@ -19,7 +20,8 @@ class LoopFindVisitor(object):
 def find_loops(nodeHash, verbose=False):
     if verbose is True: print("\nBegin!")
     loopsVisitor = LoopFindVisitor()
-    for eachNode in nodeHash.keys():
+    nodes = tqdm(nodeHash.keys())
+    for eachNode in nodes:
         if not loopsVisitor.node_visited(eachNode):
             BFS(eachNode, nodeHash, loopsVisitor, [])
     if verbose is True:

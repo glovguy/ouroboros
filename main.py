@@ -8,5 +8,3 @@ loops = find_loops(nodeHash, verbose=False)
 
 display_problem_modules(loops)
 display_loops(loops)
-
-

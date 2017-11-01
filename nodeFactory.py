@@ -1,11 +1,13 @@
 import re
 import csv
+from tqdm import tqdm
 
 
 def node_hash(fileName, ignore=[], verbose=False):
     with open(fileName, 'r') as directionalData:
         csvFile = csv.reader(directionalData, delimiter=";")
         next(csvFile)  # Skip header
+        csvFile = tqdm(csvFile)
         nodeHash = hash_from_csv(csvFile, ignore)
     if verbose is True: print("nodeHash: ", nodeHash, "Length: ", len(nodeHash))
     return nodeHash
