@@ -14,11 +14,12 @@ def node_hash(fileName, ignore=[], verbose=False):
 def hash_from_csv(csvFile, ignore):
     nodeHash = {}
     for line in csvFile:
-        path, eachline, importedmodule = line
+        path, eachline = line
         pythonifiedPath = pythonify_path(path)
         if ignore_node(pythonifiedPath, ignore): continue
-        if nodeHash.get(pythonifiedPath) is None: nodeHash[pythonifiedPath] = set()
-        nodeHash[pythonifiedPath].add(importedmodule)
+        if nodeHash.get(pythonifiedPath) is None:
+            nodeHash[pythonifiedPath] = set()
+        nodeHash[pythonifiedPath].add(imported_module(eachline))
     return nodeHash
 
 
@@ -28,10 +29,13 @@ def pythonify_path(path):
 
 
 def imported_module(line):
-    if re.search(r'.*from.*', line):
+    import_partial_module = re.search(r'.*from.*', line)
+    if import_partial_module is not None:
         return re.search(r'from (.*) import.*', line).group(1)
-    else:
-        return re.search(r'import (.*)', line).group(1)
+    import_whole_module = re.search(r'import (.*)', line)
+    if import_whole_module:
+        return import_whole_module.group(1)
+    return None
 
 
 def ignore_node(node, ignore):
