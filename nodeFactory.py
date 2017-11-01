@@ -27,7 +27,14 @@ def pythonify_path(path):
     return re.sub(r'\.py', '', p)
 
 
+def imported_module(line):
+    if re.search(r'.*from.*', line):
+        return re.search(r'from (.*) import.*', line).group(1)
+    else:
+        return re.search(r'import (.*)', line).group(1)
+
+
 def ignore_node(node, ignore):
     for eachPattern in ignore:
-        if re.match(eachPattern, node) is not None: return True
+        if re.search(eachPattern, node) is not None: return True
     return False

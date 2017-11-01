@@ -24,6 +24,12 @@ class test_node_factory(unittest.TestCase):
             { 'file': set(['other_file']) }
             )
 
+    def test_imported_module_form_1(self):
+        self.assertEqual(imported_module('from user import contacts'), 'user')
+
+    def test_imported_module_form_2(self):
+        self.assertEqual(imported_module('import contacts'), 'contacts')
+
 
 class test_circularity(unittest.TestCase):
     def test_loop_find_visitor_keeps_track_of_visited_nodes(self):
