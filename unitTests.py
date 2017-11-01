@@ -72,6 +72,18 @@ class test_circularity(unittest.TestCase):
             }
         self.assertEqual(groups, expected)
 
+    def test_edges_from_loops(self):
+        loops = [
+            ('3', '4'),
+            ('1', '5', '6'),
+            ('4', '7')
+            ]
+        expectedEdges = [
+            ('3', '4'), ('4', '3'), ('1', '5'), ('5', '6'),
+            ('6', '1'), ('4', '7'), ('7', '4')
+            ]
+        self.assertEqual(edges_from_loops(loops), expectedEdges)
+
 
 class test_traversal(unittest.TestCase):
     def test_breadth_first_search_visits_all_nodes_in_depth_first_order(self):
