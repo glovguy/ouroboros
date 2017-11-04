@@ -13,7 +13,7 @@ def node_hash(fileName, ignore=[], verbose=False):
     return nodeHash
 
 
-def hash_from_csv(csvFile, ignore):
+def hash_from_csv(csvFile, ignore=[]):
     nodeHash = {}
     for line in csvFile:
         path, eachline = line

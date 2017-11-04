@@ -1,7 +1,7 @@
 import unittest
 from testHelper import *
 from nodeFactory import *
-from circularity import *
+import circularity
 from traversal import *
 
 class test_node_factory(unittest.TestCase):
@@ -20,7 +20,7 @@ class test_node_factory(unittest.TestCase):
 
     def test_hash_from_csv(self):
         self.assertEqual(
-            hash_from_csv([['file', '', 'other_file']], []),
+            hash_from_csv([['file', 'import other_file']]),
             { 'file': set(['other_file']) }
             )
 
@@ -33,30 +33,44 @@ class test_node_factory(unittest.TestCase):
 
 class test_circularity(unittest.TestCase):
     def test_loop_find_visitor_keeps_track_of_visited_nodes(self):
-        visitor = LoopFindVisitor()
+        visitor = circularity.LoopFindVisitor()
         visitor.visit('nodename', [])
         self.assertTrue(visitor.node_visited('nodename'))
 
     def test_loop_find_visitor_identifies_loop(self):
-        visitor = LoopFindVisitor()
+        visitor = circularity.LoopFindVisitor()
         self.assertTrue(visitor.visit('n3', ['n1', 'n2', 'n3', 'n4']))
-        self.assertEqual(visitor.loops, [('n3', 'n4')])
+        self.assertEqual(visitor.loops, set([('n3', 'n4')]))
 
     def test_loop_find_visitor_does_not_identify_non_loop(self):
-        visitor = LoopFindVisitor()
+        visitor = circularity.LoopFindVisitor()
         self.assertNotEqual(visitor.visit('n3', ['n1', 'n2']), True)
 
     def test_loop_for(self):
         path = ['n1', 'n2', 'n3', 'n4']
         self.assertEqual(
-            loop_for(path, 'n3'),
+            circularity.loop_for(path, 'n3'),
             ('n3', 'n4')
             )
 
     def test_find_loops(self):
-        loops = find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+        loops = circularity.find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
-        self.assertEqual(loops, [('n1', 'n2', 'n3')])
+        self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
+
+    def test_find_loops_is_efficient(self):
+        _LoopFindVisitor = circularity.LoopFindVisitor
+        circularity.LoopFindVisitor = MockLoopFindVisitor
+        loops = circularity.find_loops(
+            {'n1': set(['n2']),
+            'n2': set(['n3']),
+            'n3': set(['n1']),
+            'n5': set(['n1']),
+            'n6': set(['n2']),
+            'n7': set(['n3'])
+            })
+        self.assertEqual(len(loops), len(set(loops)))
+        circularity.LoopFindVisitor = _LoopFindVisitor
 
     def test_group_loops_by_module(self):
         loops = [
@@ -65,7 +79,7 @@ class test_circularity(unittest.TestCase):
             ('1', '5', '6'),
             ('4', '7')
             ]
-        groups = group_loops_by_module(loops)
+        groups = circularity.group_loops_by_module(loops)
         expected = {
             '1': set([
                 ('1', '2'),
@@ -88,7 +102,7 @@ class test_circularity(unittest.TestCase):
             ('3', '4'), ('4', '3'), ('1', '5'), ('5', '6'),
             ('6', '1'), ('4', '7'), ('7', '4')
             ]
-        self.assertEqual(edges_from_loops(loops), expectedEdges)
+        self.assertEqual(circularity.edges_from_loops(loops), expectedEdges)
 
 
 class test_traversal(unittest.TestCase):

@@ -5,13 +5,15 @@ from tqdm import tqdm
 class LoopFindVisitor(object):
     def __init__(self):
         self.visitedNodes = set()
-        self.loops = []
+        self.loops = set()
 
     def visit(self, node, path):
-        self.visitedNodes.add(node)
         if node in path[:-1]:
-            self.loops.append(loop_for(path, node))
+            self.loops.add(loop_for(path, node))
             return True
+        if self.node_visited(node):
+            return True
+        self.visitedNodes.add(node)
 
     def node_visited(self, node):
         return node in self.visitedNodes
@@ -20,7 +22,9 @@ class LoopFindVisitor(object):
 def find_loops(nodeHash, verbose=False):
     if verbose is True: print("\nBegin!")
     loopsVisitor = LoopFindVisitor()
-    nodes = tqdm(nodeHash.keys())
+    nodes = nodeHash.keys()
+    if verbose is True:
+        nodes = tqdm(nodes)
     for eachNode in nodes:
         if not loopsVisitor.node_visited(eachNode):
             BFS(eachNode, nodeHash, loopsVisitor, [])
