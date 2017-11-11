@@ -16,6 +16,30 @@ class test_project_imports(unittest.TestCase):
             ['fileOne.py', 'fileTwo.py', 'folder/file_in_folder.py']
             )
 
+    def test_imported_module_name_form_1(self):
+        self.assertEqual(
+            project_imports.imported_module_name('from user import contacts'),
+            'user'
+            )
+
+    def test_imported_module_name_form_2(self):
+        self.assertEqual(
+            project_imports.imported_module_name('import contacts'),
+            'contacts'
+            )
+
+    def test_remove_comments(self):
+        self.assertEqual(
+            remove_comments("function()# Some comment"),
+            "function()"
+            )
+
+    def test_imported_modules(self):
+        self.assertEqual(
+            imported_modules(mockFile),
+            set(['main', 'first'])
+            )
+
 
 class test_node_factory(unittest.TestCase):
     def test_pythonify_path(self):
@@ -33,15 +57,15 @@ class test_node_factory(unittest.TestCase):
 
     def test_hash_from_csv(self):
         self.assertEqual(
-            hash_from_csv([['file', 'import other_file']]),
+            hash_from_iterator([['file', 'import other_file']]),
             { 'file': set(['other_file']) }
             )
 
-    def test_imported_module_form_1(self):
-        self.assertEqual(imported_module('from user import contacts'), 'user')
-
-    def test_imported_module_form_2(self):
-        self.assertEqual(imported_module('import contacts'), 'contacts')
+    def test_add_node_to_hash(self):
+        self.assertEqual(
+            add_node_to_hash({}, 'node_name', 'imported_module'),
+            {'node_name': set(['imported_module'])}
+            )
 
 
 class test_circularity(unittest.TestCase):

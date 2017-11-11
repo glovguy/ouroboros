@@ -1,13 +1,13 @@
 from project_imports import all_project_python_files
-from nodeFactory import node_hash
+from nodeFactory import *
 from circularity import find_loops
 from display.graph import display_loops
 from display.table import display_problem_modules
 
-nodeHash = node_hash('directional_data.txt', ignore=[], verbose=False)
-loops = find_loops(nodeHash, verbose=False)
 
 pythonFiles = all_project_python_files()
+nodeHash = node_hash_from_file_names(pythonFiles)
+loops = find_loops(nodeHash, verbose=False)
 
 def save_loops(loops, fileName='loops.txt'):
     with open(fileName) as loopsFile:

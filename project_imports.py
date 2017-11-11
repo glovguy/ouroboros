@@ -9,3 +9,26 @@ def all_project_python_files():
             allFiles.append(eachFilePath)
     return allFiles
 
+
+def imported_modules(file):
+    modules = set()
+    for eachLine in file:
+            module = imported_module_name(eachLine)
+            if module is not None:
+                modules.add(module)
+    return modules
+
+
+def imported_module_name(line):
+    line = remove_comments(line)
+    import_partial_module = re.search(r'.*from.*', line)
+    if import_partial_module is not None:
+        return re.search(r'from (.*) import.*', line).group(1)
+    import_whole_module = re.search(r'import (.*)', line)
+    if import_whole_module:
+        return import_whole_module.group(1)
+    return None
+
+
+def remove_comments(line):
+    return re.sub(r'#.*', '', line)

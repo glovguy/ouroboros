@@ -23,3 +23,11 @@ class GitMock(object):
 
     def ls_files(self):
         return self.files
+
+mockFile = """
+import main
+from first import second
+def function():
+    pass
+# Some comment with the word import in it
+""".split("\n")
