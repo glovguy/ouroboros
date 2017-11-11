@@ -15,3 +15,11 @@ class MockLoopFindVisitor(LoopFindVisitor):
     def __init__(self):
         self.visitedNodes = set()
         self.loops = setMock()
+
+class GitMock(object):
+    @classmethod
+    def set_ls_files(cls, ls_files):
+        cls.files = ls_files
+
+    def ls_files(self):
+        return self.files

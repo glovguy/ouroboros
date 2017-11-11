@@ -3,6 +3,19 @@ from testHelper import *
 from nodeFactory import *
 import circularity
 from traversal import *
+import project_imports
+
+
+class test_project_imports(unittest.TestCase):
+    def test_all_project_python_files(self):
+        GitMock.set_ls_files(
+            'fileOne.py\nfileTwo.py\nnon_python_file.sh\nfolder/file_in_folder.py\nfolder/markdown.md')
+        project_imports.Git = GitMock
+        self.assertEqual(
+            project_imports.all_project_python_files(),
+            ['fileOne.py', 'fileTwo.py', 'folder/file_in_folder.py']
+            )
+
 
 class test_node_factory(unittest.TestCase):
     def test_pythonify_path(self):
@@ -106,6 +119,7 @@ class test_circularity(unittest.TestCase):
 
 
 class test_traversal(unittest.TestCase):
+    # This test is flaky in python3 :/
     def test_breadth_first_search_visits_all_nodes_in_depth_first_order(self):
         visitor = MockVisitor()
         maxN = 5

@@ -1,7 +1,7 @@
 
 def BFS(node, nodeHash, visitor, path):
     if visitor.visit(node, path): return
-    for eachNode in nodeHash[node]:
+    for eachChild in nodeHash[node]:
         newPath = path + [node]
-        if nodeHash.get(eachNode) is not None:
-            BFS(eachNode, nodeHash, visitor, newPath)
+        if nodeHash.get(eachChild) is not None:
+            BFS(eachChild, nodeHash, visitor, newPath)
