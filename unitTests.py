@@ -143,16 +143,17 @@ class test_circularity(unittest.TestCase):
 
 
 class test_traversal(unittest.TestCase):
-    # This test is flaky in python3 :/
     def test_breadth_first_search_visits_all_nodes_in_depth_first_order(self):
         visitor = MockVisitor()
-        maxN = 5
+        maxN = 3
         nodeHash = {str(x): str(x+1) for x in range(0, maxN)}
-        nodeHash['1'] = set(['3','2'])
+        nodeHash['0'] = set(['1','4'])
+        nodeHash['4'] = set(['5'])
+        nodeHash['5'] = set(['6'])
         BFS('0', nodeHash, visitor, [])
         self.assertEqual(
             visitor.visited,
-            ['0', '1', '3', '4', '2', '3', '4']
+            ['0', '1', '2', '4', '5']
             )
 
 
