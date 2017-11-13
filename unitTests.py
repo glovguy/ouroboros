@@ -1,30 +1,31 @@
 import unittest
 from testHelper import *
-from nodeFactory import *
-import circularity
-from traversal import *
-import project_imports
+from load.nodeFactory import *
+import circularity.search
+from circularity.group import *
+from circularity.traversal import *
+import load.project_imports
 
 
 class test_project_imports(unittest.TestCase):
     def test_all_project_python_files(self):
         GitMock.set_ls_files(
             'fileOne.py\nfileTwo.py\nnon_python_file.sh\nfolder/file_in_folder.py\nfolder/markdown.md')
-        project_imports.Git = GitMock
+        load.project_imports.Git = GitMock
         self.assertEqual(
-            project_imports.all_project_python_files(),
+            load.project_imports.all_project_python_files(),
             ['fileOne.py', 'fileTwo.py', 'folder/file_in_folder.py']
             )
 
     def test_imported_module_name_form_1(self):
         self.assertEqual(
-            project_imports.imported_module_name('from user import contacts'),
+            load.project_imports.imported_module_name('from user import contacts'),
             'user'
             )
 
     def test_imported_module_name_form_2(self):
         self.assertEqual(
-            project_imports.imported_module_name('import contacts'),
+            load.project_imports.imported_module_name('import contacts'),
             'contacts'
             )
 
@@ -68,37 +69,37 @@ class test_node_factory(unittest.TestCase):
             )
 
 
-class test_circularity(unittest.TestCase):
+class test_circularity_search(unittest.TestCase):
     def test_loop_find_visitor_keeps_track_of_visited_nodes(self):
-        visitor = circularity.LoopFindVisitor()
+        visitor = circularity.search.LoopFindVisitor()
         visitor.visit('nodename', [])
         self.assertTrue(visitor.node_visited('nodename'))
 
     def test_loop_find_visitor_identifies_loop(self):
-        visitor = circularity.LoopFindVisitor()
+        visitor = circularity.search.LoopFindVisitor()
         self.assertTrue(visitor.visit('n3', ['n1', 'n2', 'n3', 'n4']))
         self.assertEqual(visitor.loops, set([('n3', 'n4')]))
 
     def test_loop_find_visitor_does_not_identify_non_loop(self):
-        visitor = circularity.LoopFindVisitor()
+        visitor = circularity.search.LoopFindVisitor()
         self.assertNotEqual(visitor.visit('n3', ['n1', 'n2']), True)
 
     def test_loop_for(self):
         path = ['n1', 'n2', 'n3', 'n4']
         self.assertEqual(
-            circularity.loop_for(path, 'n3'),
+            circularity.search.loop_for(path, 'n3'),
             ('n3', 'n4')
             )
 
     def test_find_loops(self):
-        loops = circularity.find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+        loops = circularity.search.find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
         self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
 
     def test_find_loops_is_efficient(self):
-        _LoopFindVisitor = circularity.LoopFindVisitor
-        circularity.LoopFindVisitor = MockLoopFindVisitor
-        loops = circularity.find_loops(
+        _LoopFindVisitor = circularity.search.LoopFindVisitor
+        circularity.search.LoopFindVisitor = MockLoopFindVisitor
+        loops = circularity.search.find_loops(
             {'n1': set(['n2']),
             'n2': set(['n3']),
             'n3': set(['n1']),
@@ -107,17 +108,17 @@ class test_circularity(unittest.TestCase):
             'n7': set(['n3'])
             })
         self.assertEqual(len(loops), len(set(loops)))
-        circularity.LoopFindVisitor = _LoopFindVisitor
+        circularity.search.LoopFindVisitor = _LoopFindVisitor
 
     def test_find_loops_with_stack(self):
-        loops = circularity.find_loops_with_stack({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+        loops = circularity.search.find_loops_with_stack({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
         self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
 
     def test_find_loops_with_stack_is_efficient(self):
-        _visit = circularity.visit
-        circularity.visit = mock_visit
-        loops = circularity.find_loops_with_stack(
+        _visit = circularity.search.visit
+        circularity.search.visit = mock_visit
+        loops = circularity.search.find_loops_with_stack(
             {'n1': set(['n2']),
             'n2': set(['n3']),
             'n3': set(['n1']),
@@ -128,6 +129,8 @@ class test_circularity(unittest.TestCase):
         self.assertEqual(len(loops), len(set(loops)))
         circularity.visit = _visit
 
+
+class test_circularity_group(unittest.TestCase):
     def test_group_loops_by_module(self):
         loops = [
             ('1', '2'),
@@ -135,7 +138,7 @@ class test_circularity(unittest.TestCase):
             ('1', '5', '6'),
             ('4', '7')
             ]
-        groups = circularity.group_loops_by_module(loops)
+        groups = group_loops_by_module(loops)
         expected = {
             '1': set([
                 ('1', '2'),
@@ -158,7 +161,7 @@ class test_circularity(unittest.TestCase):
             ('3', '4'), ('4', '3'), ('1', '5'), ('5', '6'),
             ('6', '1'), ('4', '7'), ('7', '4')
             ]
-        self.assertEqual(circularity.edges_from_loops(loops), expectedEdges)
+        self.assertEqual(edges_from_loops(loops), expectedEdges)
 
 
 class test_traversal(unittest.TestCase):

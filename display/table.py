@@ -2,7 +2,11 @@ from tabulate import tabulate
 from circularity import group_loops_by_module
 
 
+SORT_BY_MODULE = lambda pair: pair[1]
+
+
 def display_problem_modules(loops):
     problemModules = group_loops_by_module(loops, verbose=False)
-    problemModuleStats = sorted([[mod, len(problemModules[mod])] for mod in problemModules], key=lambda pair: pair[1], reverse=True)
+    problemModuleStats = [[mod, len(problemModules[mod])] for mod in problemModules]
+    problemModuleStats = sorted(problemModuleStats, key=SORT_BY_MODULE, reverse=True)
     print(tabulate(problemModuleStats, headers=['Module', '# of loops']))

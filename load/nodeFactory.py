@@ -1,7 +1,7 @@
 import re
 import csv
 from tqdm import tqdm
-from project_imports import *
+from load.project_imports import *
 
 
 def node_hash_from_csv(fileName, ignore=[], verbose=False):

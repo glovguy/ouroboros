@@ -1,6 +1,6 @@
-from project_imports import all_project_python_files
-from nodeFactory import *
-from circularity import find_loops
+from load.project_imports import all_project_python_files
+from load.nodeFactory import *
+from circularity.search import find_loops
 from display.graph import display_loops
 from display.table import display_problem_modules
 

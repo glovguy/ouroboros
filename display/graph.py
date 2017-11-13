@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-from circularity import edges_from_loops
+from circularity.group import edges_from_loops
 
 
 def display_loops(loops):

@@ -1,15 +1,16 @@
-from circularity import LoopFindVisitor
+from circularity.search import LoopFindVisitor
+
 
 class setMock(list):
     def add(self, el):
         self.append(el)
 
 class MockVisitor(object):
-        def __init__(self):
-            self.visited = []
+    def __init__(self):
+        self.visited = []
 
-        def visit(self, node, path):
-            self.visited.append(node)
+    def visit(self, node, path):
+        self.visited.append(node)
 
 class MockLoopFindVisitor(LoopFindVisitor):
     def __init__(self):
@@ -17,7 +18,7 @@ class MockLoopFindVisitor(LoopFindVisitor):
         self.loops = setMock()
 
 def mock_visit(node, path, loops, visited):
-    from circularity import loop_for
+    from circularity.search import loop_for
     if isinstance(visited, set):
         visited = list(visited)
     if node in path[:-1]:
