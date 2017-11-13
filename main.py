@@ -9,6 +9,7 @@ pythonFiles = all_project_python_files()
 nodeHash = node_hash_from_file_names(pythonFiles)
 loops = find_loops(nodeHash, verbose=False)
 
+
 def save_loops(loops, fileName='loops.txt'):
     with open(fileName) as loopsFile:
         for loop in loops:

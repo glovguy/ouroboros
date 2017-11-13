@@ -109,6 +109,25 @@ class test_circularity(unittest.TestCase):
         self.assertEqual(len(loops), len(set(loops)))
         circularity.LoopFindVisitor = _LoopFindVisitor
 
+    def test_find_loops_with_stack(self):
+        loops = circularity.find_loops_with_stack({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+        self.assertEqual(len(loops), 1)
+        self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
+
+    def test_find_loops_with_stack_is_efficient(self):
+        _visit = circularity.visit
+        circularity.visit = mock_visit
+        loops = circularity.find_loops_with_stack(
+            {'n1': set(['n2']),
+            'n2': set(['n3']),
+            'n3': set(['n1']),
+            'n5': set(['n1']),
+            'n6': set(['n2']),
+            'n7': set(['n3'])
+            })
+        self.assertEqual(len(loops), len(set(loops)))
+        circularity.visit = _visit
+
     def test_group_loops_by_module(self):
         loops = [
             ('1', '2'),

@@ -1,4 +1,4 @@
-from traversal import BFS
+from traversal import BFS, BFS_with_stack
 from tqdm import tqdm
 
 
@@ -37,6 +37,36 @@ def find_loops(nodeHash, verbose=False):
             print(l)
         print("Done!")
     return loopsVisitor.loops
+
+
+def find_loops_with_stack(nodeHash, verbose=False):
+    if verbose is True: print("\nBegin!")
+    nodes = nodeHash.keys()
+    visited = set()
+    loops = set()
+    if verbose is True:
+        nodes = tqdm(nodes)
+    for eachNode in nodes:
+        stack = [(eachNode, [])]
+        loops.union(BFS_with_stack(stack, nodeHash, visit, visited, loops))
+    if verbose is True:
+        if len(loops) > 0:
+            print("Loops: ")
+        else:
+            print("No loops found!")
+        for l in loops:
+            print(l)
+        print("Done!")
+    return loops
+
+
+def visit(node, path, loops, visited):
+    if node in path[:-1]:
+        loops.add(loop_for(path, node))
+        return True
+    if node in visited:
+        return True
+    visited.add(node)
 
 
 def loop_for(path, node):
