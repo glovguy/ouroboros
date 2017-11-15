@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from circularity import group_loops_by_module
+from circularity.group import group_loops_by_module
 
 
 SORT_BY_MODULE = lambda pair: pair[1]
