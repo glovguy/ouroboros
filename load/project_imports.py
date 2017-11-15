@@ -21,10 +21,10 @@ def imported_modules(file):
 
 def imported_module_name(line):
     line = remove_comments(line)
-    import_partial_module = re.search(r'.*from.*', line)
+    import_partial_module = re.search(r'^from (.*) import.*', line)
     if import_partial_module is not None:
         return re.search(r'from (.*) import.*', line).group(1)
-    import_whole_module = re.search(r'import (.*)', line)
+    import_whole_module = re.search(r'^import (.*)', line)
     if import_whole_module:
         return import_whole_module.group(1)
     return None

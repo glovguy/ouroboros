@@ -29,6 +29,16 @@ class test_project_imports(unittest.TestCase):
             'contacts'
             )
 
+    def test_imported_module_name_returns_none_when_no_match(self):
+        self.assertEqual(
+            load.project_imports.imported_module_name('something from nothing'),
+            None
+            )
+        self.assertEqual(
+            load.project_imports.imported_module_name('something of import for him'),
+            None
+            )
+
     def test_remove_comments(self):
         self.assertEqual(
             remove_comments("function()# Some comment"),
@@ -128,6 +138,19 @@ class test_circularity_search(unittest.TestCase):
             })
         self.assertEqual(len(loops), len(set(loops)))
         circularity.visit = _visit
+
+    def test_starting_nodes(self):
+        self.assertEqual(
+            circularity.search.starting_nodes(
+                {'n1': set(['n2']),
+                'n2': set(['n3']),
+                'n3': set(['n1']),
+                'n5': set(['n1']),
+                'n6': set(['n2']),
+                'n7': set(['n3'])}
+            ),
+            ['n5', 'n6', 'n7']
+        )
 
 
 class test_circularity_group(unittest.TestCase):

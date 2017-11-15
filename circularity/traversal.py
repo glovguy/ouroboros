@@ -15,11 +15,4 @@ def BFS_with_stack(stack, nodeHash, visit, visited, tally):
         if visit(nextNode, nextPath, tally, visited): continue
         for eachChild in nodeHash[nextNode]:
             stack.append((eachChild, nextPath + [nextNode]))
-        remove_duplicates_in_stack(stack)
     return tally
-
-
-def remove_duplicates_in_stack(stack):
-    for eachNode in stack:
-        while stack.count(eachNode) > 1:
-            stack.remove(eachNode)

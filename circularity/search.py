@@ -41,9 +41,9 @@ def find_loops(nodeHash, verbose=False):
 
 def find_loops_with_stack(nodeHash, verbose=False):
     if verbose is True: print("\nBegin!")
-    nodes = nodeHash.keys()
     visited = set()
     loops = set()
+    nodes = starting_nodes(nodeHash, verbose)
     if verbose is True:
         nodes = tqdm(nodes)
     for eachNode in nodes:
@@ -72,3 +72,14 @@ def visit(node, path, loops, visited):
 def loop_for(path, node):
     loopStart = path.index(node)
     return tuple(path[loopStart:])
+
+
+def starting_nodes(nodeHash, verbose=False):
+    allKeys = list(nodeHash)
+    allValues = [item for eachSet in nodeHash.values() for item in eachSet]
+    nodes = [item for item in allKeys if item not in allValues]
+    if len(nodes) == 0:
+        if verbose is True:
+            print("Not sure how you got a totally cyclic graph, but ok")
+        nodes = [allKeys[0]]
+    return nodes
