@@ -39,6 +39,16 @@ class test_project_imports(unittest.TestCase):
             None
             )
 
+    def test_imported_module_name_inside_function(self):
+        self.assertEqual(
+            load.project_imports.imported_module_name("    import something"),
+            'something'
+            )
+        self.assertEqual(
+            load.project_imports.imported_module_name("    from another import thing"),
+            'another'
+            )
+
     def test_remove_comments(self):
         self.assertEqual(
             remove_comments("function()# Some comment"),
