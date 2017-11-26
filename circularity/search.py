@@ -18,8 +18,7 @@ class LoopFindVisitor(object):
     def node_visited(self, node):
         return node in self.visitedNodes
 
-
-def find_loops(nodeHash, verbose=False):
+def find_loops_with_visitor(nodeHash, verbose=False):
     if verbose is True: print("\nBegin!")
     loopsVisitor = LoopFindVisitor()
     nodes = nodeHash.keys()
