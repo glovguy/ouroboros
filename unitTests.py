@@ -111,15 +111,15 @@ class test_circularity_search(unittest.TestCase):
             ('n3', 'n4')
             )
 
-    def test_find_loops(self):
-        loops = circularity.search.find_loops({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
+    def test_find_loops_with_visitor(self):
+        loops = circularity.search.find_loops_with_visitor({'n1': set(['n2']), 'n2': set(['n3']), 'n3': set(['n1'])})
         self.assertEqual(len(loops), 1)
         self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
 
-    def test_find_loops_is_efficient(self):
+    def test_find_loops_with_visitor_is_efficient(self):
         _LoopFindVisitor = circularity.search.LoopFindVisitor
         circularity.search.LoopFindVisitor = MockLoopFindVisitor
-        loops = circularity.search.find_loops(
+        loops = circularity.search.find_loops_with_visitor(
             {'n1': set(['n2']),
             'n2': set(['n3']),
             'n3': set(['n1']),
@@ -136,8 +136,6 @@ class test_circularity_search(unittest.TestCase):
         self.assertEqual(loops, set([('n1', 'n2', 'n3')]))
 
     def test_find_loops_with_stack_is_efficient(self):
-        _visit = circularity.search.visit
-        circularity.search.visit = mock_visit
         loops = circularity.search.find_loops_with_stack(
             {'n1': set(['n2']),
             'n2': set(['n3']),
@@ -147,7 +145,13 @@ class test_circularity_search(unittest.TestCase):
             'n7': set(['n3'])
             })
         self.assertEqual(len(loops), len(set(loops)))
-        circularity.visit = _visit
+
+    def test_find_loops_with_stack_does_not_pop_empty_stack(self):
+        loops = circularity.search.find_loops_with_stack(
+            {'n1': set(['n2']),
+            'n1': set(['n3'])
+            })
+        self.assertEqual(len(loops), len(set(loops)))
 
     def test_starting_nodes(self):
         self.assertEqual(

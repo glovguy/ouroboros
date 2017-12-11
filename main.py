@@ -1,13 +1,13 @@
 from load.project_imports import all_project_python_files
 from load.nodeFactory import *
-from circularity.search import find_loops
+from circularity.search import find_loops_with_stack
 from display.graph import display_loops
 from display.table import display_problem_modules
 
 
 pythonFiles = all_project_python_files()
 nodeHash = node_hash_from_file_names(pythonFiles)
-loops = find_loops(nodeHash, verbose=False)
+loops = find_loops_with_stack(nodeHash, verbose=False)
 
 
 def save_loops(loops, fileName='loops.txt'):
